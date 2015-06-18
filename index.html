@@ -37,12 +37,12 @@
       </nav>
       <!-- Page Content -->
 
-      <div class="container">
-        
+      <div class="container">  
         <!-- Background image for the html -->
         <div id="bg">
             <img src="images/pinterest_bg.jpg" alt="">
         </div>
+         
          <!-- Title -->
          <div class="row">
             <div class="col-lg-12">
@@ -50,12 +50,16 @@
             </div>
          </div>
          <!-- /.row -->
-        <hr style="border-color:#9d9d9d"> 
+        
+         <hr style="border-color:#9d9d9d"> 
+         
          <!-- Page Features -->
          <div id="pinholder" class="row text-center">
          </div>
          <!-- /.row -->
+         
          <hr style="border-color:white">
+         
          <!-- Footer -->
          <footer>
             <div class="row">
@@ -67,96 +71,12 @@
       </div>
       <!-- /.container -->
 
-      <div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header" style="background-color:#eee;">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <center>
-                     <h4 class="modal-title" id="viewDetailsModalLabel" style="color:grey">Pin Details</h4>
-                  </center>
-               </div>
-               <div class="modal-body">
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-               </div>
-            </div>
-            <!-- /.modal-content -->
-         </div>
-         <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-
       <!-- jQuery -->
       <script src="js/jquery.js"></script>
       <!-- Bootstrap Core JavaScript -->
       <script src="js/bootstrap.min.js"></script>
-      <!-- Custom js script to get data from DB, via AJAX call -->
-      <script>
-
-        // Global id tracker for Pin's components
-        var idTracker = 1;
-
-        // Function to call get Pins
-        function getPinListFunction(pageParameter){
-            $.ajax({
-                url: "http://localhost/server_processing_getpinlist.php?page_number=" + pageParameter,
-                type: "GET",
-                dataType: "jsonp"
-                })
-                .done(function( data ) {
-                    // Storing the count of the records in reponse
-                    var recordsCount = data["data"].length;
-
-                    // Loop over count and dynamically render the pins on the html page
-                    for ( var i=0; i<recordsCount; i++ ) {
-
-                        // Dynamically add custom div
-                        $( "#pinholder" ).append( '<div id="pin" class="col-md-3 col-sm-6 hero-feature"><div class="thumbnail"><img id="thumbnail_url'+ idTracker +'" src="http://placehold.it/800x500" style="border:1px solid grey" alt=""><div class="caption"><h5 id="title'+ idTracker +'" style="text-align:left" >Title:</h5><h5 id="author'+ idTracker +'" style="text-align:left">Author:</h5><p id="blurb'+ idTracker +'" style="text-align:left">Description:</p><h></h><hr style="border-color:#9d9d9d"><p><a id="details_url'+ idTracker +'" href="#" data-target="#viewDetailsModal" data-toggle="modal" class="btn btn-primary">More Info</a></p></div></div></div>' );
-
-                        // Set value on the above div's dynamically
-                        $("#title" + idTracker).text('Title: ' +data["data"][i]["title"]);
-                        $("#author" + idTracker).text('Author: ' +data["data"][i]["author"]);
-
-                        // Variable to store orignal description text and truncate excess data. Current - 150 characters
-                        var text = data["data"][i]["blurb"]
-                        if (text.length>149)
-                        $("#blurb" + idTracker).text('Description: ' +text.substring(0,150)+ "...");
-
-                        $("#thumbnail_url" + idTracker).attr("src", data["data"][i]["thumbnail_url"]);
-                        $("#details_url" + idTracker).attr("href", data["data"][i]["thumbnail_url"]);
-                        idTracker++;
-                     };
-                 })
-                 .fail(function() {
-                    alert( "Error Occured..." );
-                });
-        }
-
-        $(document).ready(function () {
-            // Variables defined for pagination and grouping
-            var pageParameter = 0;
-            var totalPages = 2; // This means 0,1,2 - 3 pages. Harcoded for now.
-            
-            // Calling the get pins function on page load
-            getPinListFunction(pageParameter);
-            pageParameter++;
-
-            // Function to detect page scroll and load pins
-            $(window).scroll(function() { 
-                if($(window).scrollTop() + $(window).height() == $(document).height())  
-                {
-                    if(pageParameter <= totalPages)
-                    {   
-                        getPinListFunction(pageParameter);
-                        pageParameter ++;
-                    
-                    }
-                }
-            });
-        });
-      </script>
+      <!-- Custom js script for fashionsheet tasks-->
+      <script src="js/fashionsheet.js"></script>
 
    </body>
 </html>

@@ -20,6 +20,7 @@ footer {
     margin: 50px 0;
 }
 
+/* Required for setting the full screen background with overlay html elements*/
 #bg {
     position:fixed; 
     top:-50%; 
