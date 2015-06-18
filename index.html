@@ -31,21 +31,6 @@
                </button>
                <a class="navbar-brand" href="#">StyleSheet</a>
             </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <!-- <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-               <ul class="nav navbar-nav">
-                  <li>
-                     <a href="#">About</a>
-                  </li>
-                  <li>
-                     <a href="#">Services</a>
-                  </li>
-                  <li>
-                     <a href="#">Contact</a>
-                  </li>
-               </ul>
-            </div> -->
-            <!-- /.navbar-collapse -->
          </div>
          <!-- /.container -->
       </nav>
@@ -87,30 +72,35 @@
       <script src="js/jquery.js"></script>
       <!-- Bootstrap Core JavaScript -->
       <script src="js/bootstrap.min.js"></script>
-      <!-- Custom js files to get data from DB, via AJAX call -->
+      <!-- Custom js script to get data from DB, via AJAX call -->
       <script>
+
+        // Global id tracker for Pin's components
+        var idTracker = 1;
+
         // Function to call get Pins
-        function getPinListFunction(){
+        function getPinListFunction(pageParameter){
             $.ajax({
-                url: "http://localhost/server_processing_getpinlist.php",
+                url: "http://localhost/server_processing_getpinlist.php?page_number=" + pageParameter,
                 type: "GET",
                 dataType: "jsonp"
                 })
                 .done(function( data ) {
                     // Storing the count of the records in reponse
-                    var recordsCount = data["recordsFiltered"];
+                    var recordsCount = data["data"].length;
 
                     // Loop over count and dynamically render the pins on the html page
-                    for ( var i=0; i<recordsCount ; i++ ) {
+                    for ( var i=0; i<recordsCount; i++ ) {
 
                         // Dynamically add custom div
-                        $( "#pinholder" ).append( '<div id="pin" class="col-md-3 col-sm-6 hero-feature"><div class="thumbnail"><img id="thumbnail_url'+ i +'" src="http://placehold.it/800x500" alt=""><div class="caption"><h3 id="title'+ i +'">Title:</h3><h4 id="author'+ i +'">Author:</h4><p id="blurb'+ i +'">Description:</p><p><a id="details_url" href="#" class="btn btn-default">More Info</a></p></div></div></div>' );
+                        $( "#pinholder" ).append( '<div id="pin" class="col-md-3 col-sm-6 hero-feature"><div class="thumbnail"><img id="thumbnail_url'+ idTracker +'" src="http://placehold.it/800x500" alt=""><div class="caption"><h3 id="title'+ idTracker +'">Title:</h3><h4 id="author'+ idTracker +'">Author:</h4><p id="blurb'+ idTracker +'">Description:</p><p><a id="details_url" href="#" class="btn btn-default">More Info</a></p></div></div></div>' );
 
                         // Set value on the above div's dynamically
-                        $("#title" + i).text('Title: ' +data["data"][i]["title"]);
-                        $("#author" + i).text('Author: ' +data["data"][i]["author"]);
-                        $("#blurb" + i).text('Description: ' +data["data"][i]["blurb"]);
-                        $("#thumbnail_url" + i).attr("src", data["data"][i]["thumbnail_url"]);
+                        $("#title" + idTracker).text('Title: ' +data["data"][i]["title"]);
+                        $("#author" + idTracker).text('Author: ' +data["data"][i]["author"]);
+                        $("#blurb" + idTracker).text('Description: ' +data["data"][i]["blurb"]);
+                        $("#thumbnail_url" + idTracker).attr("src", data["data"][i]["thumbnail_url"]);
+                        idTracker++;
                      };
                  })
                  .fail(function() {
@@ -119,10 +109,29 @@
         }
 
         $(document).ready(function () {
-            // Calling the get pins fucntion on page load
-            getPinListFunction();
+
+            // Variables defined for pagination and grouping
+            var pageParameter = 0;
+            var totalPages = 2; // This means 0,1,2 - 3 pages. Harcoded for now.
+            
+            // Calling the get pins function on page load
+            getPinListFunction(pageParameter);
+            pageParameter++;
+
+            // Function to detect page scroll
+            $(window).scroll(function() { 
+                if($(window).scrollTop() + $(window).height() == $(document).height())  
+                {
+                    if(pageParameter < totalPages)
+                    {   
+                        getPinListFunction(pageParameter);
+                        pageParameter ++;
+                    
+                    }
+                }
+            });
         });
-        </script>
+      </script>
 
    </body>
 </html>

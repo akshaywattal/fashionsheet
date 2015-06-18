@@ -207,16 +207,19 @@ class SSP
         $limit = self::limit($request, $columns);
         $order = self::order($request, $columns);
         $where = self::filter($request, $columns, $bindings);
+
+        //Capturing filter value for timeline
+        $page_number = mysql_real_escape_string($request['page_number']);
         
-        date_default_timezone_set('America/Los_Angeles');
-        $current_date = mysql_real_escape_string(date('Y-m-d'));
+        // Declaring variable for pagination logic
+        $noOfRecords = mysql_real_escape_string(20);
+        $limit = ($page_number * $noOfRecords);
         
         // Main query to actually get the data
-        $data = self::sql_exec($db, $bindings, "SELECT SQL_CALC_FOUND_ROWS `" . implode("`, `", self::pluck($columns, 'db')) . "`
+        $data = self::sql_exec($db, $bindings, "SELECT *
              FROM `$table`
-             $where
-             $order
-             $limit");
+             ORDER BY id ASC
+             LIMIT $limit,$noOfRecords");
         
         // Data set length after filtering
         $resFilterLength = self::sql_exec($db, "SELECT FOUND_ROWS()");
@@ -226,7 +229,6 @@ class SSP
         $resTotalLength = self::sql_exec($db, "SELECT COUNT(`{$primaryKey}`)
              FROM   `$table`");
         $recordsTotal   = $resTotalLength[0][0];
-        
         
         /*
          * Output
