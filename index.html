@@ -19,7 +19,7 @@
    <body>
 
       <!-- Navigation -->
-      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color:#eee">
          <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -29,7 +29,8 @@
                <span class="icon-bar"></span>
                <span class="icon-bar"></span>
                </button>
-               <a class="navbar-brand" href="#">StyleSheet</a>
+               <a class="navbar-brand" href="index.html" style="color:grey">FashionSheet</a>
+               <a class="navbar-brand" style="text-align:center; color:grey"><i>One stop, for all Fashion Trends</i></a>
             </div>
          </div>
          <!-- /.container -->
@@ -37,36 +38,55 @@
       <!-- Page Content -->
 
       <div class="container">
-         <!-- Jumbotron Header -->
-         <header class="jumbotron hero-spacer">
-            <h1>A Warm Welcome!</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
-            <p><a class="btn btn-primary btn-large">Call to action!</a>
-            </p>
-         </header>
-         <hr>
+        
+        <!-- Background image for the html -->
+        <div id="bg">
+            <img src="images/pinterest_bg.jpg" alt="">
+        </div>
          <!-- Title -->
          <div class="row">
             <div class="col-lg-12">
-               <h3>Latest Features</h3>
+               <h3 style="color:white">Latest Trends</h3>
             </div>
          </div>
          <!-- /.row -->
+        <hr style="border-color:#9d9d9d"> 
          <!-- Page Features -->
          <div id="pinholder" class="row text-center">
          </div>
          <!-- /.row -->
-         <hr>
+         <hr style="border-color:white">
          <!-- Footer -->
          <footer>
             <div class="row">
                <div class="col-lg-12">
-                  <p>Copyright &copy; Your Website 2014</p>
+                  <p style="text-align:center; color:white">Copyright &copy; Akshay Wattal 2015</p>
                </div>
             </div>
          </footer>
       </div>
       <!-- /.container -->
+
+      <div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header" style="background-color:#eee;">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <center>
+                     <h4 class="modal-title" id="viewDetailsModalLabel" style="color:grey">Pin Details</h4>
+                  </center>
+               </div>
+               <div class="modal-body">
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+               </div>
+            </div>
+            <!-- /.modal-content -->
+         </div>
+         <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
 
       <!-- jQuery -->
       <script src="js/jquery.js"></script>
@@ -93,13 +113,19 @@
                     for ( var i=0; i<recordsCount; i++ ) {
 
                         // Dynamically add custom div
-                        $( "#pinholder" ).append( '<div id="pin" class="col-md-3 col-sm-6 hero-feature"><div class="thumbnail"><img id="thumbnail_url'+ idTracker +'" src="http://placehold.it/800x500" alt=""><div class="caption"><h3 id="title'+ idTracker +'">Title:</h3><h4 id="author'+ idTracker +'">Author:</h4><p id="blurb'+ idTracker +'">Description:</p><p><a id="details_url" href="#" class="btn btn-default">More Info</a></p></div></div></div>' );
+                        $( "#pinholder" ).append( '<div id="pin" class="col-md-3 col-sm-6 hero-feature"><div class="thumbnail"><img id="thumbnail_url'+ idTracker +'" src="http://placehold.it/800x500" style="border:1px solid grey" alt=""><div class="caption"><h5 id="title'+ idTracker +'" style="text-align:left" >Title:</h5><h5 id="author'+ idTracker +'" style="text-align:left">Author:</h5><p id="blurb'+ idTracker +'" style="text-align:left">Description:</p><h></h><hr style="border-color:#9d9d9d"><p><a id="details_url'+ idTracker +'" href="#" data-target="#viewDetailsModal" data-toggle="modal" class="btn btn-primary">More Info</a></p></div></div></div>' );
 
                         // Set value on the above div's dynamically
                         $("#title" + idTracker).text('Title: ' +data["data"][i]["title"]);
                         $("#author" + idTracker).text('Author: ' +data["data"][i]["author"]);
-                        $("#blurb" + idTracker).text('Description: ' +data["data"][i]["blurb"]);
+
+                        // Variable to store orignal description text and truncate excess data. Current - 150 characters
+                        var text = data["data"][i]["blurb"]
+                        if (text.length>149)
+                        $("#blurb" + idTracker).text('Description: ' +text.substring(0,150)+ "...");
+
                         $("#thumbnail_url" + idTracker).attr("src", data["data"][i]["thumbnail_url"]);
+                        $("#details_url" + idTracker).attr("href", data["data"][i]["thumbnail_url"]);
                         idTracker++;
                      };
                  })
@@ -109,7 +135,6 @@
         }
 
         $(document).ready(function () {
-
             // Variables defined for pagination and grouping
             var pageParameter = 0;
             var totalPages = 2; // This means 0,1,2 - 3 pages. Harcoded for now.
@@ -118,11 +143,11 @@
             getPinListFunction(pageParameter);
             pageParameter++;
 
-            // Function to detect page scroll
+            // Function to detect page scroll and load pins
             $(window).scroll(function() { 
                 if($(window).scrollTop() + $(window).height() == $(document).height())  
                 {
-                    if(pageParameter < totalPages)
+                    if(pageParameter <= totalPages)
                     {   
                         getPinListFunction(pageParameter);
                         pageParameter ++;
