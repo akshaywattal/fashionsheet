@@ -212,7 +212,9 @@ class SSP
         $page_number = mysql_real_escape_string($request['page_number']);
         
         // Declaring variable for pagination logic
-        $noOfRecords = mysql_real_escape_string(20);
+        $noOfRecords = mysql_real_escape_string(20); // Hardcoded to 20, as per requirement
+
+        // Calculating the limit to fetch records from DB
         $limit = ($page_number * $noOfRecords);
         
         // Main query to actually get the data
